@@ -1,0 +1,209 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi there! 👋\nMy name is Aditya . How can I assist you today?",
+        "options": {
+          "inputPlaceholder": "Type your question..",
+          "responseMode": "lastNode"
+        }
+      },
+      "id": "7b76eb0b-fd86-49b2-b3d3-c25442ae224d",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -416,
+        48
+      ],
+      "webhookId": "ccfa301b-047a-4aa5-aca2-a96abf8ca566"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a helpful assistant. When the user shares a Google Sheets link or asks about spreadsheet data, call the get_sheet_rows tool once to read the rows, then answer the question or summarize the data in plain text. Do not call the tool repeatedly."
+        }
+      },
+      "id": "b3964606-45b7-4321-8d23-e9e95f9f58b8",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -192,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "3f2755d1-38c0-4c5e-907a-0c0a9bef5904",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -224,
+        224
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "879388d8-fbd1-4ac8-927d-078631ec62bc",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -96,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1fuh6eM5g5r4yvBwpoc8foDmChxvgG5vMksc0lEt4Jx8",
+          "mode": "list",
+          "cachedResultName": "Mock Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fuh6eM5g5r4yvBwpoc8foDmChxvgG5vMksc0lEt4Jx8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1fuh6eM5g5r4yvBwpoc8foDmChxvgG5vMksc0lEt4Jx8/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "id": "30ea9030-93e2-4739-a088-db2343be6def",
+      "name": "get_sheet_rows",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        48,
+        224
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8fXhzF6WpqPmfvXz",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "adityarokade2004@gmail.com",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        192
+      ],
+      "id": "06a7a04f-9f3e-4571-bbac-05769f95b653",
+      "name": "Send a message in Gmail",
+      "webhookId": "b0a6325e-bacb-4cbf-a0e3-8b1729355967",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "3LI6u4g7OlgBBSnZ",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When chat message received": [
+      {
+        "json": {
+          "action": "sendMessage",
+          "sessionId": "d8f6fc5bd48646338195be94b3ef0476",
+          "chatInput": "https://docs.google.com/spreadsheets/d/1fuh6eM5g5r4yvBwpoc8foDmChxvgG5vMksc0lEt4Jx8/edit?gid=0#gid=0"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_sheet_rows": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "ebcfb627-816a-4993-9b53-851fe22a791a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "90036cc8f7ed14d7779096f019ecc0949ab09ed17b3987c78c8a5a91d3c018d5"
+  },
+  "nodeGroups": [],
+  "id": "1Xy8hGVUt1kKojGL",
+  "tags": []
+}
